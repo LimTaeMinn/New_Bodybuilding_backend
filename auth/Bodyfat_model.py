@@ -14,7 +14,7 @@ class DepthwiseConv2D(_DepthwiseConv2D):
         super().__init__(*args, **kwargs)
 
 # ────── 2) 경로 설정 ──────
-MODEL_PATH = os.getenv("BODYFAT_MODEL_PATH", "keras_Model.h5")
+MODEL_PATH = os.getenv("BODYFAT_MODEL_PATH", "keras_model.h5")
 LABEL_PATH = os.getenv("BODYFAT_LABEL_PATH", "labels.txt")
 
 # ────── 3) 모델·라벨 로드 ──────
