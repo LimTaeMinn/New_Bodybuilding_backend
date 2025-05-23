@@ -20,3 +20,16 @@ class Competition(BaseModel):
 
     class Config:
         orm_mode = True
+
+# ✅ "My Contest"에서 사용할 응답용 스키마
+class CompetitionCurrent(BaseModel):
+    d_day: int                    # D-day (예: 99)
+    title: str                   # 대회 이름
+    category: str                # 대회 종목
+    target_rank: str            # 목표 등수
+    target_bodyfat: float       # 목표 체지방률
+    current_bodyfat: float      # 현재 체지방률
+    progress_percent: float     # 다이어트 진행률 (%)
+
+    class Config:
+        orm_mode = True
