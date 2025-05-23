@@ -11,6 +11,9 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, index=True)
     hashed_password = Column(String)
+
+    competition_histories = relationship("CompetitionHistory", back_populates="user")
+
     
     # ✅ 추가된 필드
     name = Column(String)

@@ -22,4 +22,5 @@ Base = declarative_base()
 # 4. DB 테이블 생성 함수 (모델 import는 이 함수 안에서!)
 def init_db():
     from models.bodyfat import BodyfatHistory  # ✨ 함수 안에서 import (순환참조 방지)
+    from models.competition import CompetitionHistory  # ✅ 이 줄 추가!
     Base.metadata.create_all(bind=engine)
