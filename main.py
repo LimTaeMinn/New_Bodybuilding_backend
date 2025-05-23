@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from auth.routes import router as auth_router
 from routers import bodyfat
 from routers import competition
+from routers import routine  # 추가
 from database import init_db  # ✅ 이 줄 추가
 
 app = FastAPI()
@@ -10,6 +11,7 @@ app = FastAPI()
 app.include_router(bodyfat.router)
 app.include_router(auth_router)
 app.include_router(competition.router)
+app.include_router(routine.router)  # 추가
 
 
 # ✅ CORS 설정 추가

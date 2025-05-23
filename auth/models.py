@@ -14,6 +14,8 @@ class User(Base):
 
     competition_histories = relationship("CompetitionHistory", back_populates="user")
 
+
+    routines = relationship("models.routine.WorkoutRoutine", back_populates="user")
     
     # ✅ 추가된 필드
     name = Column(String)

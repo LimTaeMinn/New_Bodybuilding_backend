@@ -23,4 +23,6 @@ Base = declarative_base()
 def init_db():
     from models.bodyfat import BodyfatHistory  # ✨ 함수 안에서 import (순환참조 방지)
     from models.competition import CompetitionHistory  # ✅ 이 줄 추가!
+    from models.routine import WorkoutRoutine, WorkoutItem
+
     Base.metadata.create_all(bind=engine)
