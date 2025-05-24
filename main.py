@@ -1,16 +1,22 @@
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+import os
 from fastapi.middleware.cors import CORSMiddleware
 from auth.routes import router as auth_router
 from routers import bodyfat
 from routers import competition
 from routers import routine  # 추가
 from routers import news
+from routers import user
 from database import init_db  # ✅ 이 줄 추가
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from cron.rss_news_fetcher import fetch_news
 
 app = FastAPI()
+
+# ✅ 정적 파일 서빙 추가
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # ✅ [추가] 앱 실행 시 뉴스 자동 수집 스케줄러 시작
 scheduler = BackgroundScheduler()
@@ -21,6 +27,8 @@ app.include_router(auth_router)
 app.include_router(competition.router)
 app.include_router(routine.router)  # 추가
 app.include_router(news.router)
+app.include_router(user.router)
+
 
 
 # ✅ CORS 설정 추가

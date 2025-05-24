@@ -22,3 +22,7 @@ class User(Base):
     phone_number = Column(String)
 
     bodyfat_histories = relationship("models.bodyfat.BodyfatHistory", back_populates="user")
+
+
+    # ✅ [1단계] 프로필 이미지 경로 추가
+    profile_image_url = Column(String, nullable=True)

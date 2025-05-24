@@ -19,6 +19,7 @@ class UserResponse(BaseModel):
     name: str
     phone_number: str
     email: str
+    profile_image_url: str | None = None  # ✅ 이 줄 추가!
 
     class Config:
         orm_mode = True
