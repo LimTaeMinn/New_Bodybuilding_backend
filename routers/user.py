@@ -49,3 +49,4 @@ async def upload_profile_image(
         "message": "프로필 이미지 변경 완료",
         "image_url": f"/{file_path}"
     }
+    
