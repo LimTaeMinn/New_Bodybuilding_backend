@@ -8,10 +8,10 @@ from routers import competition
 from routers import routine  # 추가
 from routers import news
 from routers import user
-<<<<<<< HEAD
+#<<<<<<< HEAD
 from routers import proxy  # 상단 import에 추가
-=======
->>>>>>> 8313466ef238964fe0fc79354bea89fa283c01c1
+#=======
+#>>>>>>> 8313466ef238964fe0fc79354bea89fa283c01c1
 from database import init_db  # ✅ 이 줄 추가
 
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -32,10 +32,10 @@ app.include_router(competition.router)
 app.include_router(routine.router)  # 추가
 app.include_router(news.router)
 app.include_router(user.router)
-<<<<<<< HEAD
+#<<<<<<< HEAD
 app.include_router(proxy.router)  # 라우터 등록부에 추가
-=======
->>>>>>> 8313466ef238964fe0fc79354bea89fa283c01c1
+#=======
+#>>>>>>> 8313466ef238964fe0fc79354bea89fa283c01c1
 
 
 
