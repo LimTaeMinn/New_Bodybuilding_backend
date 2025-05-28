@@ -1,5 +1,3 @@
-# schemas/routine.py
-
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
@@ -23,6 +21,9 @@ class WorkoutRoutineBase(BaseModel):
     title: str
 
 class WorkoutRoutineCreate(WorkoutRoutineBase):
+    items: List[WorkoutItemCreate]
+    
+class WorkoutRoutineUpdate(WorkoutRoutineBase):
     items: List[WorkoutItemCreate]
 
 class WorkoutRoutine(WorkoutRoutineBase):
