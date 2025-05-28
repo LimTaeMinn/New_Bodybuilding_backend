@@ -53,9 +53,6 @@ def read_root():
     return {"message": "서버 정상 작동 중!"}
 
 @app.on_event("startup")
-def start_scheduler():
-    scheduler.start()
-
-
-# ✅ 서버 시작 시 DB 테이블 생성
-init_db()
+def on_startup():
+    init_db()           # DB 테이블 생성
+    scheduler.start()   # 뉴스 수집 스케줄러 시작
