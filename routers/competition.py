@@ -158,3 +158,20 @@ def delete_competition_record(
     db.delete(comp)
     db.commit()
     return
+
+# ✅ 전체 대회 기록 조회
+@router.get(
+    "/history",
+    response_model=list[schemas.competition.CompetitionResponse]
+)
+def get_all_competitions(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    records = (
+        db.query(models.competition.CompetitionHistory)
+          .filter(models.competition.CompetitionHistory.user_id == current_user.id)
+          .order_by(models.competition.CompetitionHistory.competition_date.desc())
+          .all()
+    )
+    return records
