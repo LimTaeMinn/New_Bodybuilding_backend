@@ -248,6 +248,35 @@ async def bodyfat_endpoint(
 
     return schemas.BodyFatResponse(body_fat=label, confidence=conf)
 
+@router.post("/find-id")
+def find_id(name: str = Body(...), phone_number: str = Body(...), db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(
+        models.User.name == name,
+        models.User.phone_number == phone_number
+    ).first()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="해당 정보로 가입된 사용자가 없습니다.")
+
+    return {"email": user.email}
+
+@router.post("/reset-password")
+def reset_password(email: str = Body(...), new_password: str = Body(...), db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.email == email).first()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="사용자를 찾을 수 없습니다.")
+
+    if len(new_password) < 8:
+        raise HTTPException(status_code=400, detail="비밀번호는 최소 8자 이상이어야 합니다.")
+
+    user.hashed_password = utils.hash_password(new_password)
+    db.commit()
+
+    return {"message": "비밀번호가 성공적으로 재설정되었습니다."}
+
+
+
 # ✅ 로그인된 사용자 정보 가져오기
 def get_current_user(
     token: str = Depends(oauth2_scheme),
