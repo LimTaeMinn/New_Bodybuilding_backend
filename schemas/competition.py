@@ -29,7 +29,7 @@ class CompetitionResponse(BaseModel):
     target_rank: str
     actual_rank: str
     competition_date: date
-    target_bodyfat: float     # ← 새로 추가
+    target_bodyfat: Optional[float] = None  # ✅ 이렇게 고치기
 
     class Config:
         orm_mode = True
