@@ -1,5 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from fastapi.security import OAuth2PasswordBearer
+from fastapi import Body
+
 from sqlalchemy.orm import Session
 from database import SessionLocal, init_db
 from auth import models, schemas, utils
