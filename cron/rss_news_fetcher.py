@@ -43,7 +43,7 @@ def fetch_news():
         title = entry.title
 
         # ✅ [✨추가] '보디빌딩' 키워드 필터링
-        if "보디빌딩" not in title:
+        if "보디빌딩" not in title and "헬스" not in title:
             continue
 
         # ✅ [🔁수정] 아래 줄 수정: raw_link → link
