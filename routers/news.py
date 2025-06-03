@@ -32,7 +32,7 @@ def get_news_list(
 
     return query.order_by(News.created_at.desc()).all()
 
-@router.get("/refresh")
+@router.post("/refresh")
 def refresh_news():
     fetch_news()
     return {"message": "뉴스 새로고침 완료!"}

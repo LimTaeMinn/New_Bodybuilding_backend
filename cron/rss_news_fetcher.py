@@ -4,22 +4,14 @@ from sqlalchemy.orm import Session
 from database import SessionLocal
 from models.news import News
 
-# ✅ 새로 추가
+# ✅ 썸네일 추출용
 import requests
 from bs4 import BeautifulSoup
 
-RSS_URL = "https://news.google.com/rss/search?q=보디빌딩&hl=ko&gl=KR&ceid=KR:ko"
+# ✅ 연합뉴스 건강 섹션 RSS
+RSS_URL = "https://www.yna.co.kr/rss/health.xml"
 
-# ✅ [1] 진짜 뉴스 URL 추출
-def extract_real_url(google_link: str) -> str:
-    try:
-        response = requests.get(google_link, headers={"User-Agent": "Mozilla/5.0"}, timeout=5, allow_redirects=True)
-        return response.url  # 구글 리디렉션을 따라가서 진짜 기사 URL 획득
-    except Exception as e:
-        print(f"[실제 URL 추출 실패] {google_link} → {e}")
-        return google_link  # 실패 시 원본 링크라도 유지
-
-# ✅ [2] 썸네일 이미지 추출
+# ✅ [1] 썸네일 이미지 추출 함수 (유지)
 def extract_thumbnail(link: str) -> str:
     try:
         headers = {"User-Agent": "Mozilla/5.0"}
@@ -40,7 +32,7 @@ def extract_thumbnail(link: str) -> str:
         print(f"[썸네일 추출 실패] {link} → {e}")
     return ""
 
-# ✅ [3] 뉴스 수집
+# ✅ [2] 뉴스 수집
 def fetch_news():
     print("📰 [뉴스 수집] 시작")
     feed = feedparser.parse(RSS_URL)
@@ -49,23 +41,30 @@ def fetch_news():
 
     for entry in feed.entries:
         title = entry.title
-        raw_link = entry.link  # 구글 리디렉션 링크
+
+        # ✅ [✨추가] '보디빌딩' 키워드 필터링
+        if "보디빌딩" not in title:
+            continue
+
+        # ✅ [🔁수정] 아래 줄 수정: raw_link → link
+        link = entry.link
+
         published = datetime(*entry.published_parsed[:6])
 
-        # ✅ 진짜 뉴스 기사 주소 획득
-        real_link = extract_real_url(raw_link)
+        # ✅ [❌삭제] extract_real_url 관련 줄 삭제
+        # real_link = extract_real_url(raw_link)  ← ❌ 삭제
 
-        # 중복 방지
-        existing = db.query(News).filter_by(title=title, link=real_link).first()
+        # ✅ [🔁수정] 아래 줄 수정: real_link → link
+        existing = db.query(News).filter_by(title=title, link=link).first()
         if existing:
             continue
 
         # ✅ 썸네일 추출
-        image_url = extract_thumbnail(real_link)
+        image_url = extract_thumbnail(link)
 
         new_article = News(
             title=title,
-            link=real_link,  # ← 진짜 기사 주소 저장
+            link=link,  # ← 수정 완료
             image_url=image_url,
             created_at=published
         )
