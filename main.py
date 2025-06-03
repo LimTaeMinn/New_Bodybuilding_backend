@@ -23,8 +23,16 @@ app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # ✅ [추가] 앱 실행 시 뉴스 자동 수집 스케줄러 시작
+
 scheduler = BackgroundScheduler()
-scheduler.add_job(fetch_news, "interval", seconds=60)
+scheduler.add_job(
+    fetch_news,
+    "interval",
+    seconds=60,
+    id="fetch_news_job",             # ✅ 고유 ID
+    replace_existing=True            # ✅ 이미 있으면 덮어쓰기
+)
+
 
 app.include_router(bodyfat.router)
 app.include_router(auth_router)
