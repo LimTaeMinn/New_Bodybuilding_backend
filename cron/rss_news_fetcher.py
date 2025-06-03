@@ -1,17 +1,25 @@
-# ✅ 기존 코드
 import feedparser
 from datetime import datetime
 from sqlalchemy.orm import Session
 from database import SessionLocal
 from models.news import News
 
-# ✅ [1] 새로 추가
+# ✅ 새로 추가
 import requests
 from bs4 import BeautifulSoup
 
 RSS_URL = "https://news.google.com/rss/search?q=보디빌딩&hl=ko&gl=KR&ceid=KR:ko"
 
-# ✅ [2] 썸네일 이미지 추출 함수 추가
+# ✅ [1] 진짜 뉴스 URL 추출
+def extract_real_url(google_link: str) -> str:
+    try:
+        response = requests.get(google_link, headers={"User-Agent": "Mozilla/5.0"}, timeout=5, allow_redirects=True)
+        return response.url  # 구글 리디렉션을 따라가서 진짜 기사 URL 획득
+    except Exception as e:
+        print(f"[실제 URL 추출 실패] {google_link} → {e}")
+        return google_link  # 실패 시 원본 링크라도 유지
+
+# ✅ [2] 썸네일 이미지 추출
 def extract_thumbnail(link: str) -> str:
     try:
         headers = {"User-Agent": "Mozilla/5.0"}
@@ -30,9 +38,9 @@ def extract_thumbnail(link: str) -> str:
 
     except Exception as e:
         print(f"[썸네일 추출 실패] {link} → {e}")
-    return ""  # 실패 시 빈 문자열
+    return ""
 
-# ✅ 기존 fetch_news 함수 그대로 유지하면서 내부만 수정
+# ✅ [3] 뉴스 수집
 def fetch_news():
     print("📰 [뉴스 수집] 시작")
     feed = feedparser.parse(RSS_URL)
@@ -41,21 +49,24 @@ def fetch_news():
 
     for entry in feed.entries:
         title = entry.title
-        link = entry.link
+        raw_link = entry.link  # 구글 리디렉션 링크
         published = datetime(*entry.published_parsed[:6])
 
+        # ✅ 진짜 뉴스 기사 주소 획득
+        real_link = extract_real_url(raw_link)
+
         # 중복 방지
-        existing = db.query(News).filter_by(title=title, link=link).first()
+        existing = db.query(News).filter_by(title=title, link=real_link).first()
         if existing:
             continue
 
-        # ✅ [3] 썸네일 추출
-        image_url = extract_thumbnail(link)
+        # ✅ 썸네일 추출
+        image_url = extract_thumbnail(real_link)
 
         new_article = News(
             title=title,
-            link=link,
-            image_url=image_url,  # ← 여기 변경됨
+            link=real_link,  # ← 진짜 기사 주소 저장
+            image_url=image_url,
             created_at=published
         )
         db.add(new_article)
