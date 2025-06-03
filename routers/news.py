@@ -4,6 +4,7 @@ from database import get_db
 from models.news import News
 from schemas.news import NewsOut
 from datetime import datetime
+from cron.rss_news_fetcher import fetch_news
 
 router = APIRouter(prefix="/news", tags=["News"])
 
@@ -30,3 +31,8 @@ def get_news_list(
             print(f"❗ 날짜 형식 오류: {date} (예: 2025-05-24)")
 
     return query.order_by(News.created_at.desc()).all()
+
+@router.get("/refresh")
+def refresh_news():
+    fetch_news()
+    return {"message": "뉴스 새로고침 완료!"}
